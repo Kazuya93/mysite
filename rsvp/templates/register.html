@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  </head>
+  <body>
+		<h1>Welcome to the Event RSVP homepage</h1>
+		<hr/>
+		<p>{{msg}}</p>
+		<div>
+			<form action='/register' method='post'>
+				{% csrf_token %}
+				Username: <input type="text" name="username"/><br/>
+	  			Password: <input type="password" name="password"/><br/>
+	  			First name: <input type="text" name="firstname"/><br/>
+	  			Last name: <input type="text" name="lastname"/><br/>
+	  			Email: <input type="email" name="email"/> <br/>
+				<input type="submit" value="Register"/>
+			</form>
+		</div>
+		<hr/>
+
+	</body>
+</html>

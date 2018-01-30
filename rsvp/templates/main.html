@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  </head>
+  <body>
+		<h1>Welcome to the Event RSVP homepage</h1>
+		{% block content %}
+		<p>{{msg}}</p>
+		
+		<div>
+		<p>Welcome, {{name}}. <a href='/logout'>Log out</a></p>
+		</div>
+		<hr/>
+
+		<div id="hostDiv">
+		<span>The event you are a host:<br/></span>
+		<a href='/createEvent'>Create an Event</a>
+		<!--
+		<table>
+			<tr>
+		    	<th>Firstname</th>
+    			<th>Lastname</th>
+    			<th>Age</th>
+		    </tr>
+			{% for o in some_list %}
+		    <tr class="{% cycle 'row1' rowvalue2 'row3' %}">
+		    	<th>Firstname</th>
+    			<th>Lastname</th>
+    			<th>Age</th>
+		    </tr>
+			{% endfor %}
+		</table>
+		-->
+		<hr/>
+		</div>
+		{% endblock %}
+	</body>
+</html>

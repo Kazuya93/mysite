@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  </head>
+  <body>
+		<h1>Welcome to the Event RSVP homepage</h1>
+		<p>{{msg}}</p>
+		<hr/>
+		{% if next %}
+		<form action="/login?next={{next}}" method="post" >
+		{%else%}
+		<form action='/login' method='post'>
+		{% endif %}
+			{% csrf_token %}
+			Username:<br/><input type="text" name="username"/><br/>
+  			Password:<br/><input type="password" name="password"/><br/><br/>
+			<input type="submit" value="Log in"/>
+		</form>
+		<hr/>
+		<div>
+			<p>If you do not have an account. Please register at <a href="register_page">here</a></p>
+		</div>
+	</body>
+</html>
