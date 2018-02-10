@@ -9,11 +9,11 @@
 		<div>
 			<form action='/register' method='post'>
 				{% csrf_token %}
-				Username: <input type="text" name="username"/><br/>
-	  			Password: <input type="password" name="password"/><br/>
-	  			First name: <input type="text" name="firstname"/><br/>
-	  			Last name: <input type="text" name="lastname"/><br/>
-	  			Email: <input type="email" name="email"/> <br/>
+				Username: <input type="text" name="username" required><br/>
+	  			Password: <input type="password" name="password" required><br/>
+	  			First name: <input type="text" name="firstname" required><br/>
+	  			Last name: <input type="text" name="lastname" required><br/>
+	  			Email: <input type="email" name="email" required> <br/>
 				<input type="submit" value="Register"/>
 			</form>
 		</div>

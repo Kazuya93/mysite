@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  </head>
+  <body>
+		<h1>Welcome to the Event RSVP homepage</h1>
+		<p>{{msg}}</p>
+		<div>
+			<p>Onwer: {{owner}}</p>
+			<p>Vendor: {{vendor}}</p>
+			<p>Guest: {{guest}}</p>
+		</div>
+		<div>
+			<form action='/add_role/{{id}}' method='post'>
+				{% csrf_token %}
+				Username:<input type="text" name="username" required><br/>
+	  			Role: <select name="role">
+						  <option value="Owner">Owner</option>
+						  <option value="Vendor">Vendor</option>
+						  <option value="Guest">Guest</option>
+						</select> 
+						<br/><br/>
+				<input type="submit" value="Add"/>
+			</form>
+		</div>
+	</body>
+</html>

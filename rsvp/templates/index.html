@@ -12,8 +12,8 @@
 		<form action='/login' method='post'>
 		{% endif %}
 			{% csrf_token %}
-			Username:<br/><input type="text" name="username"/><br/>
-  			Password:<br/><input type="password" name="password"/><br/><br/>
+			Username:<br/><input type="text" name="username" required><br/>
+  			Password:<br/><input type="password" name="password" required><br/><br/>
 			<input type="submit" value="Log in"/>
 		</form>
 		<hr/>

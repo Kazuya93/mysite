@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	</head>
+  	<body>
+		<h1>Welcome to the Event RSVP homepage</h1>
+		<hr/>
+		<p>{{msg}}</p>
+		<div>
+			<form action='/response/{{id}}' method='post'>
+				{% csrf_token %}
+				Name: {{name}} <br/>
+	  			Date: {{date}} <br/>
+	  			Number: {{num}}<br/>
+
+	  			Your number: <input type='text' name='number'><br/>
+	  			<hr/>
+	  			free text Question:
+	  			<div>
+	  				{% for ft in fts %}
+					    <div id='div_{{forloop.counter0}}'>
+					    	Question <span>{{forloop.counter}}</span> <strong>{{ft.question}}</strong>
+					    	<textarea name='ft_ans_{{forloop.counter0}}'></textarea>>
+					   	</div>
+					{% endfor %}
+	  			</div>
+	  			multiple choice:
+	  			<div id="mc">
+	  				{% for mc in res %}
+					    <div>
+					    	Question: <strong> {{mc.a.question}} </strong><br/>
+					    	<div>
+					    		{% for c in mc.b %}
+								    <div id='mc_{{forloop.parentloop.counter0}}_{{forloop.counter0}}'>
+								    	<input type='text' name='mc_{{forloop.parentloop.counter0}}_{{forloop.counter0}}' value='{{c.choice}}'/>
+								 
+								    </div>
+								{% endfor %}
+					    	</div>
+					    	Vendor can see<input id='mc_cb_{{forloop.counter0}}' type='checkbox' name='mc_cb_{{forloop.counter0}}' {% if mc.a.vendor_can_see %} checked {% endif %} >
+					    </div>
+					{% endfor %}
+	  			</div>
+				<input type="submit" value="Submit"/>
+			</form>
+		</div>
+		<hr/>
+	</body>
+</html>

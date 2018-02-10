@@ -129,3 +129,10 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#Email settings:
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_HOST_USER = 'chengxinghao@hotmail.com'
+EMAIL_HOST_PASSWORD = 'cheng931211'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load static %}
+		<script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+		<script src="{% static "js/event.js" %}"></script>
+	</head>
+  	<body>
+		<h1>Welcome to the Event RSVP homepage</h1>
+		<hr/>
+		<p>{{msg}}</p>
+		<div>
+			<form action='/edit/{{id}}' method='post'>
+				{% csrf_token %}
+				Name: <input type="text" name="name" required value={{name}}><br/>
+	  			Date: <input type="date" name="date" required value={{date}}><br/>
+	  			<hr/>
+	  			Number: <input type="text" name="num" required value={{num}}><br/>
+	  			<hr/>
+	  			free text Question:
+	  			<div id="rsvp">
+	  				{% for ft in fts %}
+					    <div id='div_{{forloop.counter0}}'>
+					    	Question <span>{{forloop.counter}}</span>
+					    	<input id='input_{{forloop.counter0}}' type='text' name='ft_{{forloop.counter0}}' value='{{ft.question}}' /><br/>Vendor can see<input id='ft_cb_{{forloop.counter0}}' type='checkbox' name='ft_cb_{{forloop.counter0}}' {% if ft.vendor_can_see %} checked {% endif %}>
+					    	<input type='button' value='delete' class='deleteRsvp' id='del_{{forloop.counter0}}'/>
+					    	<script type="text/javascript">
+						   		$('#del_{{forloop.counter0}}').click(function(){
+									remove_div_ft($(this).attr('id'))
+		    					});
+						   	</script>
+					   	</div>
+					{% endfor %}
+	  			</div>
+	  			<input type="button" value="Add More" id="add_more_rsvp"><br/><hr/>
+	  			multiple choice:
+	  			<div id="mc">
+	  				{% for mc in res %}
+					    <div id='mc_{{forloop.counter0}}'>
+					    	Question: <input type='text' name='mc_{{forloop.counter0}}' value='{{mc.a.question}}'/><br/>
+					    	<div>
+					    		{% for c in mc.b %}
+								    <div id='mc_{{forloop.parentloop.counter0}}_{{forloop.counter0}}'>
+								    	<input type='text' name='mc_{{forloop.parentloop.counter0}}_{{forloop.counter0}}' value='{{c.choice}}'/>
+								    	<input id='mc_del_{{forloop.parentloop.counter0}}_{{forloop.counter0}}' type='button' value='delete choice'/>
+								    	<script type="text/javascript">
+								    		$("#mc_del_{{forloop.parentloop.counter0}}_{{forloop.counter0}}").click(function() {
+										    	delete_choice($(this).attr('id'))
+										    });
+								    	</script>
+								    </div>
+								{% endfor %}
+					    	</div>
+					    	Vendor can see<input id='mc_cb_{{forloop.counter0}}' type='checkbox' name='mc_cb_{{forloop.counter0}}' {% if mc.a.vendor_can_see %} checked {% endif %} >
+
+
+					    	<input id='mc_del_{{forloop.counter0}}' type='button' value='delete question'/>
+					    	<input id='mc_add_choice_{{forloop.counter0}}' type='button' value='add choice'/>
+					    	<hr/>
+					    	<script type="text/javascript">
+			    				$('#mc_del_{{forloop.counter0}}').click(function(){
+									remove_div_mc_q($(this).attr('id'))
+							    });
+
+							    $('#mc_add_choice_{{forloop.counter0}}').click(function() {
+							    	add_choice($(this).attr('id'))
+							    });
+					    	</script>
+					    </div>
+					{% endfor %}
+	  			</div>
+	  			<input id="add_more_mc_q" type='button' value='add question'/>
+				<input type="submit" value="Submit"/>
+			</form>
+		</div>
+		<hr/>
+	</body>
+</html>
