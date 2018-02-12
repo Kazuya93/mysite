@@ -35,5 +35,9 @@ urlpatterns = [
     path('add_role/<int:id>', views.add_role),
     path('response_page/<int:id>', views.response_page),
     path('response/<int:id>', views.response),
+    path('all_response/<int:id>',views.all_response),
+    path('view_response/<int:id>/<str:username>',views.view_response),
+    path('finalize_page/<int:id>',views.finalize_page),
+    path('finalize/<int:id>',views.finalize),
     path('admin/', admin.site.urls),
 ]

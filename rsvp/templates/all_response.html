@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  </head>
+  <body>
+		<h1>Welcome to the Event RSVP homepage</h1>
+		<p>{{msg}}</p>
+
+		<h2>Guests: </h2>
+		{% for user in users %}
+			<a href='/view_response/{{id}}/{{user}}'>{{user}}</a>
+		{% endfor %}
+	</body>
+</html>

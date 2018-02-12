@@ -292,9 +292,205 @@ def add_role(request, id):
 		tmp.save()
 	return redirect('/add_role_page/'+str(id))
 
-def reponse_page(request, id):
-	event = Event.objects.filter(id=id)[0]
-	
-	return render(request, 'response.html')
+def retrieveMC(id, username):
+	res = MC_Q.objects.filter(eid=id)
+	ret = []
+	answer = []
+	final = []
+	vendor_can_see = []
+	for q in res:
+		if q.vendor_can_see:
+			vendor_can_see.append(True)
+		else:
+			vendor_can_see.append(False)
+		final.append(q.is_finalized)
+		answer_tmp = []
+		tmp = MultiChoice()
+		tmp.question = q.question
+		choices = MC_Choice.objects.filter(qid=q.id)
+		for c in choices:
+			tmp.choices.append(c.choice)
+			answer_tmp.append(False)
+		ret.append(tmp)
+		a = MC_A.objects.filter(qid=q.id).filter(username=username)
+		if len(a)>0:
+			print(a[0].answer.choice)
+			answer_tmp[tmp.choices.index(a[0].answer.choice)] = True
+		answer.append(answer_tmp)
+	return ret,answer,final,vendor_can_see
 
-def reponse(request, id):
+def retrieveFT(id, username):
+	questions = FT_Q.objects.filter(eid=id)
+	answers = []
+	final = []
+	for q in questions:
+		final.append(q.is_finalized)
+		tmp = FT_A.objects.filter(qid=q.id).filter(username=username)
+		if len(tmp) == 0:
+			answers.append('')
+		else:
+			answers.append(tmp[0].answer)
+	return questions,answers,final
+
+
+def response_page(request, id):
+	class ft:
+		def __init__(self, q, a, f):
+			self.q = q
+			self.a = a
+			self.f = f
+	class c:
+		def __init__(self, choice, chosen):
+			self.choice = choice
+			self.chosen = chosen
+	class mc_:
+		def __init__(self, q, c, f):
+			self.q = q
+			self.f = f
+			self.c = c
+	event = Event.objects.filter(id=id)[0]
+	ft_q, ft_answer, ft_final = retrieveFT(event.id, request.user.username)
+	print(ft_q)
+	print(ft_answer)
+	print(ft_final)
+	fts = []
+	for i in range(len(ft_q)):
+		fts.append(ft(ft_q[i].question,ft_answer[i],ft_final[i]))
+	mc, mc_answer, mc_final,_ = retrieveMC(event.id, request.user.username)
+	print(mc_answer)
+	mcs = []
+	for i in range(len(mc)):
+		tmp = []
+		for j in range(len(mc[i].choices)):
+			tmp.append(c(mc[i].choices[j],mc_answer[i][j]))
+		mcs.append(mc_(mc[i].question,tmp,mc_final[i]))
+	return render(request, 'response_page.html', {'event':event,'fts':fts,'mcs':mcs})
+
+def response(request, id):
+
+	number = request.POST.get('number')
+	ft_a = []
+	ft = FT_Q.objects.filter(eid=id)
+	i = 0
+	while request.POST.get('ft_ans_'+str(i)) is not None:
+		ft_a.append(request.POST.get('ft_ans_'+str(i)))
+		i+=1
+	mc_a = []
+	mc = MC_Q.objects.filter(eid=id)
+	i=0
+	while request.POST.get('mc_res_'+str(i)) is not None:
+		mc_a.append(request.POST.get('mc_res_'+str(i)))
+		i+=1
+	username = request.user.username
+
+	for i in range(len(ft_a)):
+		FT_A.objects.filter(qid=ft[i]).filter(username=username).delete()
+		tmp = FT_A(qid=ft[i],username=username,answer=ft_a[i])
+		tmp.save()
+	for i in range(len(mc_a)):
+		choice = MC_Choice.objects.filter(qid=mc[i].id).filter(choice=mc_a[i])
+		MC_A.objects.filter(qid=mc[i]).filter(username=username).delete()
+		tmp = MC_A(qid=mc[i],username=username,answer=choice[0])
+		tmp.save()
+	return redirect('/response_page/'+str(id))
+
+
+def all_response(request, id):
+	tmp = access.objects.filter(eid=id).filter(role='Guest')
+	return render(request, 'all_response.html', {'users':[x.username for x in tmp], 'id':id})
+
+def view_response(request, id, username):
+	class ft:
+		def __init__(self, q, a, f):
+			self.q = q
+			self.a = a
+			self.f = f
+	class c:
+		def __init__(self, choice, chosen):
+			self.choice = choice
+			self.chosen = chosen
+	class mc_:
+		def __init__(self, q, c, f):
+			self.q = q
+			self.f = f
+			self.c = c
+	role = access.objects.filter(eid=id).filter(username=username)
+	if(len(role)==0):
+		return redirect('/')
+	role_str = [r.role for r in role]
+	print(role_str)
+	if 'Owner' in role_str:
+		event = Event.objects.filter(id=id)[0]
+		ft_q, ft_answer, ft_final = retrieveFT(event.id, username)
+		print(ft_q)
+		print(ft_answer)
+		print(ft_final)
+		fts = []
+		for i in range(len(ft_q)):
+			fts.append(ft(ft_q[i].question,ft_answer[i],ft_final[i]))
+		mc, mc_answer, mc_final,_ = retrieveMC(event.id, username)
+		print(mc_answer)
+		mcs = []
+		for i in range(len(mc)):
+			tmp = []
+			for j in range(len(mc[i].choices)):
+				tmp.append(c(mc[i].choices[j],mc_answer[i][j]))
+			mcs.append(mc_(mc[i].question,tmp,mc_final[i]))
+		return render(request, 'view_response.html', {'event':event,'fts':fts,'mcs':mcs})
+	elif 'Vendor' in role_str:
+		event = Event.objects.filter(id=id)[0]
+		ft_q, ft_answer, ft_final = retrieveFT(event.id, username)
+		print(ft_q)
+		print(ft_answer)
+		print(ft_final)
+		fts = []
+		for i in range(len(ft_q)):
+			if ft_q[i].vendor_can_see:
+				fts.append(ft(ft_q[i].question,ft_answer[i],ft_final[i]))
+		mc, mc_answer, mc_final, see = retrieveMC(event.id, username)
+		print("here,"+str(see))
+		print(mc_answer)
+		mcs = []
+		for i in range(len(mc)):
+			if see[i]:
+				tmp = []
+				for j in range(len(mc[i].choices)):
+					tmp.append(c(mc[i].choices[j],mc_answer[i][j]))
+				mcs.append(mc_(mc[i].question,tmp,mc_final[i]))
+		return render(request, 'view_response.html', {'event':event,'fts':fts,'mcs':mcs})
+	else:
+		return HttpResponse('faile')
+	return render(request, 'view_response.html')
+
+
+def finalize_page(request, id):
+	fts = FT_Q.objects.filter(eid=id)
+	mcs = MC_Q.objects.filter(eid=id)
+	return render(request, 'finalize.html',{'fts':fts,'mcs':mcs,'id':id})
+
+
+def finalize(request, id):
+	fts = FT_Q.objects.filter(eid=id)
+	i=0
+	print(request.POST.get('ft_'+str(i)))
+	while request.POST.get('ft_'+str(i)) is not None:
+		tmp = fts[i]
+		if(request.POST.get('ft_'+str(i)) == 'yes'):
+			tmp.is_finalized = True
+		else:
+			tmp.is_finalized = False
+		tmp.save()
+		i+=1
+	i=0
+	
+	mcs = MC_Q.objects.filter(eid=id)
+	while request.POST.get('mc_'+str(i)) is not None:
+		tmp = mcs[i]
+		if(request.POST.get('mc_'+str(i)) == 'yes'):
+			tmp.is_finalized = True
+		else:
+			tmp.is_finalized = False
+		tmp.save()
+		i+=1
+
+	return HttpResponse("success")

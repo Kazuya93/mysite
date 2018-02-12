@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load static %}
+		<script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+		<script src="{% static "js/event.js" %}"></script>
+	</head>
+  	<body>
+		<h1>Welcome to the Event RSVP homepage</h1>
+		<hr/>
+		<p>{{msg}}</p>
+		<div>
+			<form action='/finalize/{{id}}' method='post'>
+				{% csrf_token %}
+
+				{% for ft in fts %}
+					<label>{{ft.question}}</label>
+					<select name="ft_{{forloop.counter0}}">
+						<option value="yes" {% if ft.is_finalized %} selected {% endif %}> yes </option>
+						<option value='no' {% if not ft.is_finalized %} selected {% endif %}>no</option>
+
+					</select><br/>
+				{% endfor %}
+
+				<hr/>
+				{% for mc in mcs %}
+					<label>{{mc.question}}</label>
+					<select name="mc_{{forloop.counter0}}">
+						<option value="yes" {% if mc.is_finalized %} selected {% endif %}> yes </option>
+						<option value='no' {% if not mc.is_finalized %} selected {% endif %}>no</option>
+
+					</select><br/>
+				{% endfor %}
+
+
+				<input type="submit" value="Submit"/>
+			</form>
+		</div>
+		<hr/>
+	</body>
+</html>

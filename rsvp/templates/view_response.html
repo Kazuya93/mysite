@@ -19,7 +19,7 @@
 	  				{% for ft in fts %}
 					    <div>
 					    	Question <span>{{forloop.counter}}</span> <strong>{{ft.q}}</strong><br/>
-					    	<textarea name='ft_ans_{{forloop.counter0}}' {% if ft.f %} readonly {% endif %}>{{ft.a}}</textarea>
+					    	<textarea name='ft_ans_{{forloop.counter0}}' readonly>{{ft.a}}</textarea>
 					   	</div>
 					{% endfor %}
 	  			</div>
@@ -30,21 +30,12 @@
 					    <div id="mc_{{forloop.counter0}}">
 					    	Question: <strong> {{mc.q}} </strong><br/>
 					    	Answer: 
-					    	{% if mc.f %}
 					    		{% for c in mc.c %}
 					    			{% if c.chosen %}
 										<input type='text' name='mc_res_{{forloop.counter0}}' value='{{c.choice}}' readonly>
 									{% endif %}
 								{% endfor %}
-					    	{% else %} 
-						    	<div>
-						    		<select name="mc_res_{{forloop.counter0}}">
-						    			{% for c in mc.c %}
-										    <option value='{{c.choice}}' {% if c.chosen %} selected {% endif %}>{{c.choice}}</option>
-										{% endfor %}
-						    		</select>
-						    	</div>
-					    	{% endif %}
+
 					    </div>
 					{% endfor %}
 	  			</div>

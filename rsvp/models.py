@@ -16,7 +16,7 @@ class FT_Q(models.Model):
 class FT_A(models.Model):
     qid = models.ForeignKey(FT_Q, on_delete=models.CASCADE)
     username = models.CharField(max_length=200)
-    Answer = models.CharField(max_length=200)
+    answer = models.CharField(max_length=200)
 
 class MC_Q(models.Model):
     eid = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -29,7 +29,7 @@ class MC_Choice(models.Model):
     choice = models.CharField(max_length=200)
 
 class MC_A(models.Model):
-    eid = models.ForeignKey(MC_Q, on_delete=models.CASCADE)
+    qid = models.ForeignKey(MC_Q, on_delete=models.CASCADE)
     answer = models.ForeignKey(MC_Choice, on_delete=models.CASCADE)
     username = models.CharField(max_length=200)
 
